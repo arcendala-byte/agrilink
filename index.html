@@ -1,0 +1,228 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgriLink</title>
+  <link rel="manifest" href="manifest.json">
+  
+  <!-- Google Maps API -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvDEaqNfdhHwWt6jgZK6XhH4JyFJsYFLo&libraries=places,geometry&callback=initMap" async defer></script>
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 50%, #43A047 100%);
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    }
+    #loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 50%, #43A047 100%);
+      z-index: 1000;
+      transition: opacity 0.3s ease-out;
+    }
+    .logo-container { animation: logoAppear 0.5s ease-out forwards; margin-bottom: 20px; }
+    @keyframes logoAppear {
+      0% { opacity: 0; transform: scale(0.5); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    .logo {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, #FFFFFF, #E8F5E9);
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      margin: 0 auto;
+    }
+    .logo-icon { font-size: 60px; }
+    .app-name {
+      font-size: 42px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #FFFFFF, #E8F5E9);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-align: center;
+      letter-spacing: 2px;
+      margin-top: 20px;
+      margin-bottom: 12px;
+      animation: textAppear 0.5s ease-out 0.1s both;
+    }
+    .tagline {
+      font-size: 15px;
+      color: rgba(255, 255, 255, 0.9);
+      text-align: center;
+      margin-bottom: 45px;
+      animation: textAppear 0.5s ease-out 0.2s both;
+    }
+    @keyframes textAppear {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .spinner {
+      width: 45px;
+      height: 45px;
+      border: 3px solid rgba(255, 255, 255, 0.2);
+      border-top: 3px solid white;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      margin-top: 20px;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .dots { display: flex; gap: 10px; margin-top: 18px; }
+    .dot {
+      width: 8px;
+      height: 8px;
+      background: white;
+      border-radius: 50%;
+      animation: dotPulse 0.8s ease-in-out infinite;
+    }
+    .dot:nth-child(1) { animation-delay: 0s; }
+    .dot:nth-child(2) { animation-delay: 0.15s; }
+    .dot:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes dotPulse {
+      0%, 100% { opacity: 0.3; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+    .version {
+      position: absolute;
+      bottom: 25px;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.4);
+      text-align: center;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div id="loading">
+    <div class="logo-container"><div class="logo"><span class="logo-icon">🌾</span></div></div>
+    <div class="app-name">AgriLink</div>
+    <div class="tagline">Connecting Farmers Directly to Markets</div>
+    <div class="spinner"></div>
+    <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+    <div class="version">v1.0.0</div>
+  </div>
+  
+  <script>function initMap(){console.log('Google Maps API loaded successfully');}</script>
+  
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js"></script>
+  
+  <script>
+    const vapidKey = "BNEyGp0uY8-v8dm_ywSdf-uks4wZO2-41WuO92n26UDg_miWJDB9nBtIv0ouUtxpPxFGlnk0417M0q7IsHWjv3k";
+    
+    const firebaseConfig = {
+      apiKey: "AIzaSyDTSQjJjyGRL_4QxtyPbrqmaC6CvdqGBeY",
+      authDomain: "agrilinknew-4ba5f.firebaseapp.com",
+      projectId: "agrilinknew-4ba5f",
+      storageBucket: "agrilinknew-4ba5f.firebasestorage.app",
+      messagingSenderId: "414602884782",
+      appId: "1:414602884782:web:0b229b003c7a5296bdf3f",
+      measurementId: "G-L7JDZZN88F"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const messaging = firebase.messaging();
+    
+    async function initializePushNotifications() {
+      try {
+        // Wait for service worker
+        const registration = await navigator.serviceWorker.ready;
+        console.log('Service Worker ready:', registration);
+        
+        const permission = await Notification.requestPermission();
+        if (permission === 'granted') {
+          console.log('Notification permission granted');
+          const token = await messaging.getToken({ 
+            vapidKey: vapidKey,
+            serviceWorkerRegistration: registration
+          });
+          console.log('FCM Token:', token);
+        }
+      } catch (error) {
+        console.error('Error initializing notifications:', error);
+      }
+    }
+    
+    messaging.onMessage((payload) => {
+      console.log('Message received:', payload);
+      if (payload.notification && Notification.permission === 'granted') {
+        new Notification(payload.notification.title, {
+          body: payload.notification.body,
+          icon: '/icons/icon-192.png'
+        });
+      }
+    });
+    
+    // Register service worker first
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', async function() {
+        try {
+          const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+          console.log('ServiceWorker registered:', registration);
+          await initializePushNotifications();
+        } catch (error) {
+          console.log('ServiceWorker registration failed:', error);
+        }
+      });
+    }
+  </script>
+  
+  <script src="flutter.js" defer></script>
+  <script>
+    (function() {
+      var loadingDiv = document.getElementById('loading');
+      var startTime = performance.now();
+      
+      function hideLoading() {
+        if (loadingDiv) {
+          loadingDiv.style.transition = 'opacity 0.3s ease-out';
+          loadingDiv.style.opacity = '0';
+          setTimeout(function() { loadingDiv.style.display = 'none'; }, 300);
+        }
+      }
+      
+      var minLoadingTime = 2000;
+      var timeoutId = setTimeout(hideLoading, minLoadingTime);
+      
+      window.addEventListener('load', function() {
+        if (window._flutter && window._flutter.loader) {
+          window._flutter.loader.loadEntrypoint({
+            onEntrypointLoaded: async function(engineInitializer) {
+              var appRunner = await engineInitializer.initializeEngine();
+              var elapsed = performance.now() - startTime;
+              var remainingDelay = Math.max(0, minLoadingTime - elapsed);
+              setTimeout(function() {
+                clearTimeout(timeoutId);
+                hideLoading();
+                appRunner.runApp();
+              }, remainingDelay);
+            }
+          }).catch(function(e) {
+            console.error('Flutter error:', e);
+            setTimeout(hideLoading, 500);
+          });
+        } else {
+          setTimeout(hideLoading, minLoadingTime);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

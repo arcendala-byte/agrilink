@@ -1,0 +1,83 @@
+﻿name: agrilink
+description: AgriLink - Digital Agricultural Marketplace
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  
+  # Firebase Core
+  firebase_core: ^3.15.2
+  firebase_auth: ^5.7.0
+  cloud_firestore: ^5.6.12
+  firebase_storage: ^12.4.10
+  firebase_messaging: ^15.2.10
+  firebase_analytics: ^11.6.0
+  
+  # Push Notifications
+  flutter_local_notifications: ^17.0.0
+  
+  # Google Sign In
+  google_sign_in: ^6.3.0
+  
+  # UI & Design
+  google_fonts: ^6.3.3
+  material_design_icons_flutter: ^7.0.7296
+  shimmer: ^3.0.0
+  lottie: ^3.0.0
+  animations: ^2.0.8
+  
+  # State Management
+  flutter_riverpod: ^2.6.1
+  provider: ^6.1.1
+  
+  # Navigation
+  go_router: ^13.2.5
+  
+  # Storage & Cache
+  shared_preferences: ^2.2.2
+  path_provider: ^2.1.1
+  
+  # Maps & Location
+  google_maps_flutter: ^2.5.0
+  geolocator: ^10.1.1
+  geocoding: ^2.2.2
+  
+  # Images & Media
+  image_picker: ^1.0.5
+  cached_network_image: ^3.3.1
+  
+  # Charts & Analytics
+  fl_chart: ^0.66.2
+  
+  # Utilities (Use version compatible with flutter_localizations)
+  intl: ^0.20.2
+  url_launcher: ^6.2.1
+  phone_numbers_parser: ^8.3.0
+  
+  # Offline Support
+  sqflite: ^2.3.0
+  
+  # HTTP Requests
+  http: ^1.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.1
+  build_runner: ^2.4.7
+
+flutter:
+  uses-material-design: true
+  
+  assets:
+    - assets/animations/
+    - assets/icons/
+    - assets/images/
+    - assets/fonts/
+    - assets/translations/

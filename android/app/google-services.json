@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "550467463933",
+    "project_id": "agrilink-116df",
+    "storage_bucket": "agrilink-116df.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:550467463933:android:3b57d706161cdae4212c94",
+        "android_client_info": {
+          "package_name": "com.agrilink.agrilink"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCaoZG9F0frbDC_41oXSU5HSutP9om9GdI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
